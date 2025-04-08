@@ -23,6 +23,7 @@ def detected_image(image):
             cv2.rectangle(image, (x1, y1), (x2, y2), (0, 255, 0), 2)
             cv2.putText(image, transport_classes[int(class_id)], (x1, y1 - 10),
                         cv2.FONT_HERSHEY_SIMPLEX, 0.5, (0, 255, 0), 2)
+
     cv2.imwrite('src/img/result_detected.jpg', image)
     return transport_boxes, image
 
@@ -60,7 +61,7 @@ def draw_parking(parking_coordinates, img, colors=None):
 
 #______MAIN_____
 
-num_camera = 1
+num_camera = 3
 
 coordinates, image = get_image_and_coordinates(num_camera) # Получение координат парковок и обрезанного изображения
 _, image = detected_image(image) # Распознавание авто

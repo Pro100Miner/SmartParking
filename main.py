@@ -1,8 +1,8 @@
 import cv2
 import numpy as np
-import torch
+from ultralytics import YOLO
 
-model = torch.hub.load('ultralytics/yolov5', 'yolov5m', pretrained=True)
+model = YOLO('yolov5m.pt')
 # Список классов для транспорта (машины, грузовики, мотоциклы)
 transport_classes = {2: 'car', 3: 'motorcycle', 5: 'bus', 7: 'truck'}
 
@@ -10,21 +10,19 @@ transport_classes = {2: 'car', 3: 'motorcycle', 5: 'bus', 7: 'truck'}
 def detected_image(image):
     if image is None:
         print("Ошибка: Не удалось загрузить изображение.")
-        return []
-
-    results = model(image)
-    boxes = results.xyxy[0].cpu().numpy()  # Тензор с результатами
-
+        return
+    results = model(image)[0]
+    boxes = results.boxes.xyxy.cpu().numpy().astype(np.int32)
+    classes = results.boxes.cls.cpu().numpy()
     transport_boxes = []
-    for det in boxes:
-        x1, y1, x2, y2, conf, cls_id = det[:6]
-        if int(cls_id) in transport_classes and conf > 0.5:
-            transport_boxes.append((int(x1), int(y1), int(x2), int(y2)))
-            # Рисование рамок на изображении
-            cv2.rectangle(image, (int(x1), int(y1)), (int(x2), int(y2)), (0, 255, 0), 2)
-            cv2.putText(image, transport_classes[int(cls_id)], (int(x1), int(y1) - 10),
-                        cv2.FONT_HERSHEY_SIMPLEX, 0.5, (0, 255, 0), 2)
 
+    for class_id, box in zip(classes, boxes):
+        if int(class_id) in transport_classes:  # Фильтрация по классам транспорта
+            x1, y1, x2, y2 = box
+            transport_boxes.append((x1, y1, x2, y2))
+            cv2.rectangle(image, (x1, y1), (x2, y2), (0, 255, 0), 2)
+            cv2.putText(image, transport_classes[int(class_id)], (x1, y1 - 10),
+                        cv2.FONT_HERSHEY_SIMPLEX, 0.5, (0, 255, 0), 2)
     cv2.imwrite('src/img/result_detected.jpg', image)
     return transport_boxes, image
 
@@ -62,7 +60,7 @@ def draw_parking(parking_coordinates, img, colors=None):
 
 #______MAIN_____
 
-num_camera = 3
+num_camera = 1
 
 coordinates, image = get_image_and_coordinates(num_camera) # Получение координат парковок и обрезанного изображения
 _, image = detected_image(image) # Распознавание авто

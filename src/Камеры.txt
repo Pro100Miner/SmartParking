@@ -1,0 +1,3 @@
+https://restreamer.vms.evo73.ru/6d45d91a23b8f377/stream.m3u8
+http://50.246.145.122:80/cgi-bin/faststream.jpg?stream=half&fps=15&rand=COUNTER
+http://86.127.212.113/cgi-bin/faststream.jpg?stream=half&fps=15&rand=COUNTER

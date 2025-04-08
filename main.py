@@ -2,74 +2,68 @@ import cv2
 import numpy as np
 import torch
 
-
-model = YOLO('src/yolov5m.pt')
+model = torch.hub.load('ultralytics/yolov5', 'yolov5m', pretrained=True)
 # Список классов для транспорта (машины, грузовики, мотоциклы)
 transport_classes = {2: 'car', 3: 'motorcycle', 5: 'bus', 7: 'truck'}
-number_kam = 1
 
 # Функция для обработки изображения
-def process_image(image):
+def detected_image(image):
     if image is None:
         print("Ошибка: Не удалось загрузить изображение.")
-        return
-    # Получение результатов от модели YOLOv8
-    results = model(image)[0]
-    # Получение оригинального изображения и результатов
-    boxes = results.boxes.xyxy.cpu().numpy().astype(np.int32)
-    classes = results.boxes.cls.cpu().numpy()
+        return []
 
-    # Список для хранения координат транспорта
+    results = model(image)
+    boxes = results.xyxy[0].cpu().numpy()  # Тензор с результатами
+
     transport_boxes = []
-
-    # Обработка результатов
-    for class_id, box in zip(classes, boxes):
-        if int(class_id) in transport_classes:  # Фильтрация по классам транспорта
-            x1, y1, x2, y2 = box
-            transport_boxes.append((x1, y1, x2, y2))
-
+    for det in boxes:
+        x1, y1, x2, y2, conf, cls_id = det[:6]
+        if int(cls_id) in transport_classes and conf > 0.5:
+            transport_boxes.append((int(x1), int(y1), int(x2), int(y2)))
             # Рисование рамок на изображении
-            cv2.rectangle(image, (x1, y1), (x2, y2), (0, 255, 0), 2)
-            cv2.putText(image, transport_classes[int(class_id)], (x1, y1 - 10),
+            cv2.rectangle(image, (int(x1), int(y1)), (int(x2), int(y2)), (0, 255, 0), 2)
+            cv2.putText(image, transport_classes[int(cls_id)], (int(x1), int(y1) - 10),
                         cv2.FONT_HERSHEY_SIMPLEX, 0.5, (0, 255, 0), 2)
-    # Сохранение измененного изображения
-    output_image_path = 'p3.jpg'
-    cv2.imwrite(output_image_path, image)
-    # Возвращение координат транспорта
-    return transport_boxes
+
+    cv2.imwrite('src/img/result_detected.jpg', image)
+    return transport_boxes, image
 
 
-def obrabotka(number_kam):
-  o1= open('FILES/Камеры.txt', 'r')
-  text1 = o1.read()
-  o2 = open('FILES/Координаты.txt', 'r')
-  text2 = o2.read()
-  o3 = open('FILES/НеобхФрагмент.txt', 'r')
-  text3 = o3.read()
+def get_image_and_coordinates(num):
+    # Файл с данными о камерах
+    text1 = open('src/Камеры.txt', 'r').read()
+    cameras = text1.split('\n')
+    # Файл с координатами парковок
+    text2 = open('src/Координаты.txt', 'r').read()
+    all_parking_coordinates = text2.split('!')[1:-1]
+    parking_coordinates = all_parking_coordinates[num - 1].split('\n')[1:-1]
+    # Файл с данными об обрезках камер
+    text3 = open('src/НеобхФрагмент.txt', 'r').read()
+    fragments = text3.split('\n')
+    fragment = fragments[num - 1].split(' ')
 
-  cameras = text1.split('\n') # Файл с данными о камерах
-  coordinates_park = text2.split('!')[1:-1] # Файл с координатами парковок
-  fragments = text3.split('\n') #  Файл с данными об обрезках камер
+    # Загрузка изображения
+    cap = cv2.VideoCapture(cameras[num - 1])
+    _, frame = cap.read()
 
-  # Загрузка изображения
-  cap = cv2.VideoCapture(cameras[number_kam-1])
-  ret, frame = cap.read()
-
-  fragment = fragments[number_kam-1].split(' ')
-
-  koor_mass = coordinates_park[number_kam-1].split('\n')
-  koor_mass.pop(0)
-  koor_mass.pop(-1)
-  # Выделение необходимого фрагмента: image[y1:y2, x1:x2]
-  cropped = frame[int(fragment[0]):int(fragment[1]), int(fragment[2]):int(fragment[3])]
-
-  for i in range(len(koor_mass)):
-    x1,y1,x2,y2,x3,y3,x4,y4 = koor_mass[i].split(' ')
-    points = np.array([[int(x1), int(y1)], [int(x2), int(y2)],[int(x3), int(y3)], [int(x4), int(y4)]])
-    cv2.polylines(cropped, [points], True, (10, 20, 241), 3)
-
-  output_image_path1 = 'parkov_1.jpg'
-  cv2.imwrite(output_image_path1, cropped)
+    # Выделение необходимого фрагмента: image[y1:y2, x1:x2]
+    cropped_img = frame[int(fragment[0]):int(fragment[1]), int(fragment[2]):int(fragment[3])]
+    return parking_coordinates, cropped_img
 
 
-obrabotka(number_kam)
+def draw_parking(parking_coordinates, img, colors=None):
+    for i in range(len(parking_coordinates)):
+        x1,y1,x2,y2,x3,y3,x4,y4 = parking_coordinates[i].split(' ')
+        points = np.array([[int(x1), int(y1)], [int(x2), int(y2)],[int(x3), int(y3)], [int(x4), int(y4)]])
+        cv2.polylines(img, [points], True, color=colors[i] if colors is not None else (0,0,255), thickness=3)
+    cv2.imwrite('src/img/detected_park.jpg', img)
+    return img
+
+
+#______MAIN_____
+
+num_camera = 3
+
+coordinates, image = get_image_and_coordinates(num_camera) # Получение координат парковок и обрезанного изображения
+_, image = detected_image(image) # Распознавание авто
+draw_parking(coordinates, image) # Отрисовка парковок

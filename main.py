@@ -2,6 +2,7 @@ import cv2
 import numpy as np
 import torch
 
+a = 2
 model = torch.hub.load('ultralytics/yolov5', 'yolov5m', pretrained=True)
 # Список классов для транспорта (машины, грузовики, мотоциклы)
 transport_classes = {2: 'car', 3: 'motorcycle', 5: 'bus', 7: 'truck'}

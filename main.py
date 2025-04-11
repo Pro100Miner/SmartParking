@@ -1,7 +1,7 @@
 import cv2
 import numpy as np
 from ultralytics import YOLO
-
+from true_false import *
 model = YOLO('yolov5m.pt')
 # Список классов для транспорта (машины, грузовики, мотоциклы)
 transport_classes = {2: 'car', 3: 'motorcycle', 5: 'bus', 7: 'truck'}
@@ -61,8 +61,12 @@ def draw_parking(parking_coordinates, img, colors=None):
 
 #______MAIN_____
 
-num_camera = 3
+num_camera = 1
 
 coordinates, image = get_image_and_coordinates(num_camera) # Получение координат парковок и обрезанного изображения
-_, image = detected_image(image) # Распознавание авто
+transport_box, image = detected_image(image) # Распознавание авто
 draw_parking(coordinates, image) # Отрисовка парковок
+print(transport_box, "ататта1")
+t_f = true_false(coordinates, transport_box)
+print(transport_box, "ататта")
+draw_parking_markings(coordinates, image, t_f)

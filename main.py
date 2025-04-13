@@ -66,7 +66,5 @@ num_camera = 1
 coordinates, image = get_image_and_coordinates(num_camera) # Получение координат парковок и обрезанного изображения
 transport_box, image = detected_image(image) # Распознавание авто
 draw_parking(coordinates, image) # Отрисовка парковок
-print(transport_box, "ататта1")
-t_f = true_false(coordinates, transport_box)
-print(transport_box, "ататта")
-draw_parking_markings(coordinates, image, t_f)
+t_f = true_false(coordinates, transport_box) # Массив True/False
+draw_parking_markings(coordinates, image, t_f) # Отрисовка занятых/свободных мест

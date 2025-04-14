@@ -46,6 +46,7 @@ def get_image_and_coordinates(num):
     _, frame = cap.read()
 
 
+
     # Выделение необходимого фрагмента: image[y1:y2, x1:x2]
     cropped_img = frame[int(fragment[0]):int(fragment[1]), int(fragment[2]):int(fragment[3])]
     return parking_coordinates, cropped_img

@@ -55,6 +55,7 @@ def is_the_parking_spot_inside(vertices1, x, y):
             # Проверяем, пересекает ли луч сторону:
             # 1. Точка должна быть между y1 и y2 по вертикали
             # 2. Точка должна быть слева от пересечения луча со стороной
+
         x1 = int(x1)
         y1 = int(y1)
         x2 = int(x2)
@@ -112,4 +113,3 @@ def draw_parking_markings(parking_coordinates1, cropped, t_f):
 
     output_image_path1 = 'src/img/result.jpg'
     cv2.imwrite(output_image_path1, cropped)
-    

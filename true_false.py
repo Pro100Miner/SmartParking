@@ -1,5 +1,23 @@
 import cv2
 import numpy as np
+from numpy.ma.core import append
+
+
+# x и y координаты пересечения диагоналей
+
+def additional_points(x, y):
+
+    x1 = x + 20
+    y1 = y
+    x2 = x
+    y2 = y + 20
+    x3 = x - 20
+    y3 = y
+    x4 = x
+    y4 = y - 20
+
+    return x1, y1, x2, y2, x3, y3, x4, y4
+
 
 # Функция для нужного формата
 def a_variable_of_the_required_format(parking_coordinates):
@@ -78,11 +96,24 @@ def true_false(parking_coordinates1, coord):
     sch = 0 # счётчик
     for i in range(len(parking_coordinates)): # цикл на каждую парковку
         for j in range(len(coord)): # цикл на каждое место
-
             x, y = finding_the_quation_of_a_straight_line(coord[j]) # находим место пересечения
             #l = makes_a_correct_array_of_lines(parking_coordinates[i]) # переделываем координаты порковки
+            x1, y1, x2, y2, x3, y3, x4, y4 = additional_points(x, y)
+
 
             if is_the_parking_spot_inside(parking_coordinates[i], x, y) == True: # проверяем находится ли jтая машина на iместе
+            # Если да то + к счётчику
+                sch = 1
+            if is_the_parking_spot_inside(parking_coordinates[i], x1, y1) == True: # проверяем находится ли jтая машина на iместе
+            # Если да то + к счётчику
+                sch = 1
+            if is_the_parking_spot_inside(parking_coordinates[i], x2, y2) == True: # проверяем находится ли jтая машина на iместе
+            # Если да то + к счётчику
+                sch = 1
+            if is_the_parking_spot_inside(parking_coordinates[i], x3, y3) == True: # проверяем находится ли jтая машина на iместе
+            # Если да то + к счётчику
+                sch = 1
+            if is_the_parking_spot_inside(parking_coordinates[i], x4, y4) == True: # проверяем находится ли jтая машина на iместе
             # Если да то + к счётчику
                 sch = 1
         if sch == 1:

@@ -2,5 +2,5 @@
 
 Выполните следующую команду для установки всех необходимых библиотек:
 
-pip install opencv-python numpy torch requests pillow
+pip install opencv-python numpy ultralytics
 

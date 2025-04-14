@@ -112,3 +112,4 @@ def draw_parking_markings(parking_coordinates1, cropped, t_f):
 
     output_image_path1 = 'src/img/result.jpg'
     cv2.imwrite(output_image_path1, cropped)
+    

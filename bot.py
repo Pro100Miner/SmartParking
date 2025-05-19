@@ -4,6 +4,11 @@ from aiogram.types import Message, FSInputFile
 from aiogram import F
 import class_parking, true_false
 
+import os
+from dotenv import load_dotenv
+load_dotenv()  # Загружает переменные из .env
+TOKEN = os.getenv("BOT_TOKEN")  # Получает токен
+bot = Bot(token=TOKEN)
 
 states = {'status': None}
 

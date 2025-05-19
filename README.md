@@ -4,5 +4,5 @@
 
 pip install opencv-python numpy ultralytics dotenv aiogram
 
-Для запуска бота нужно создать в главной директории файл .env и вставить туда токен бота
+Для запуска бота нужно создать в главной директории файл .env и вставить туда токен бота: BOT_TOKEN='token'
 

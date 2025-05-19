@@ -2,5 +2,7 @@
 
 Выполните следующую команду для установки всех необходимых библиотек:
 
-pip install opencv-python numpy ultralytics
+pip install opencv-python numpy ultralytics dotenv aiogram
+
+Для запуска бота нужно создать в главной директории файл .env и вставить туда токен бота
 

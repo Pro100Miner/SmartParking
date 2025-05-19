@@ -35,6 +35,7 @@ async def send_help(message: Message):
                          ' команда для добавление новой камеры')
 
 
+
 @dp.message(Command(commands=['rec']))   #recognition
 async def send_rec(message: Message):
     states['status'] = "rec"

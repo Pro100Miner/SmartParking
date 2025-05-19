@@ -16,6 +16,7 @@ def detected_image(image):
     classes = results.boxes.cls.cpu().numpy()
     transport_boxes = []
 
+
     for class_id, box in zip(classes, boxes):
         if int(class_id) in transport_classes:  # Фильтрация по классам транспорта
             x1, y1, x2, y2 = box

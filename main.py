@@ -34,7 +34,7 @@ def get_image_and_coordinates(num):
     cameras = text1.split('\n')
     # Файл с координатами парковок
     text2 = open('src/Координаты.txt', 'r').read()
-    all_parking_coordinates = text2.split('!')[1:-1]
+    all_parking_coordinates = text2.split('!')[1:]
     parking_coordinates = all_parking_coordinates[num - 1].split('\n')[1:-1]
     # Файл с данными об обрезках камер
     text3 = open('src/НеобхФрагмент.txt', 'r').read()
@@ -63,10 +63,10 @@ def draw_parking(parking_coordinates, img, colors=None):
 
 #______MAIN_____
 
-num_camera = 1
+num_camera = 3
 
-coordinates, image = get_image_and_coordinates(num_camera) # Получение координат парковок и обрезанного изображения
-transport_box, image = detected_image(image) # Распознавание авто
-draw_parking(coordinates, image) # Отрисовка парковок
-t_f = true_false(coordinates, transport_box) # Массив True/False
-draw_parking_markings(coordinates, image, t_f) # Отрисовка занятых/свободных мест
+#coordinates, image = get_image_and_coordinates(num_camera) # Получение координат парковок и обрезанного изображения
+#transport_box, image = detected_image(image) # Распознавание авто
+#draw_parking(coordinates, image) # Отрисовка парковок
+#t_f = true_false(coordinates, transport_box) # Массив True/False
+#draw_parking_markings(coordinates, image, t_f) # Отрисовка занятых/свободных мест

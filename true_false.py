@@ -3,6 +3,7 @@ import numpy as np
 from numpy.ma.core import append
 
 
+
 # x и y координаты пересечения диагоналей
 
 def additional_points(x, y):

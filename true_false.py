@@ -7,14 +7,14 @@ from numpy.ma.core import append
 
 def additional_points(x, y):
 
-    x1 = x + 20
+    x1 = x + 10
     y1 = y
     x2 = x
-    y2 = y + 20
-    x3 = x - 20
+    y2 = y + 10
+    x3 = x - 10
     y3 = y
     x4 = x
-    y4 = y - 20
+    y4 = y - 10
 
     return x1, y1, x2, y2, x3, y3, x4, y4
 
@@ -130,17 +130,11 @@ def true_false(parking_coordinates1, coord):
 # t_f - массив True и False
 def draw_parking_markings(parking_coordinates1, cropped, t_f):
     parking_coordinates = a_variable_of_the_required_format(parking_coordinates1)
-    print(len(parking_coordinates), len(parking_coordinates1))
     for i in range(len(t_f)):
         x1,y1,x2,y2,x3,y3,x4,y4 = parking_coordinates[i][0], parking_coordinates[i][1], parking_coordinates[i][2], parking_coordinates[i][3], parking_coordinates[i][4], parking_coordinates[i][5], parking_coordinates[i][6], parking_coordinates[i][7]
         points = np.array([[int(x1), int(y1)], [int(x2), int(y2)],[int(x3), int(y3)], [int(x4), int(y4)]])
-        if t_f[i] == False:
-            cv2.polylines(cropped, [points], True, (10, 230, 21), 3)
-    for i in range(len(t_f)):
-        x1,y1,x2,y2,x3,y3,x4,y4 = parking_coordinates[i][0], parking_coordinates[i][1], parking_coordinates[i][2], parking_coordinates[i][3], parking_coordinates[i][4], parking_coordinates[i][5], parking_coordinates[i][6], parking_coordinates[i][7]
-        points = np.array([[int(x1), int(y1)], [int(x2), int(y2)],[int(x3), int(y3)], [int(x4), int(y4)]])
-        if t_f[i] == True:
-            cv2.polylines(cropped, [points], True, (10, 23, 230), 3)
+        color = (10, 23, 230) if t_f[i] else (10, 230, 21)
+        cv2.polylines(cropped, [points], True, color, 3)
 
     output_image_path1 = 'src/img/result.jpg'
     cv2.imwrite(output_image_path1, cropped)
